@@ -56,7 +56,6 @@ class ImmoScout24API:
                     break
                 page += 1
             return properties
-
 # Example usage
 if __name__ == "__main__":
     api = ImmoScout24API()
