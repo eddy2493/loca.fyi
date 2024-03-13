@@ -47,14 +47,17 @@ class GwrUtil:
                 f.write(response.content)
             with zipfile.ZipFile(canton_code+'.zip', 'r') as zip_ref:
                 zip_ref.extractall(dest_folder)
+                
+            ### Remove unused files
             os.remove(canton_code+'.zip')
-            
             items = os.listdir(dest_folder)
             for item in items:
                 if item.endswith(".pdf"):
                     os.remove(os.path.join(dest_folder, item))
             os.remove(os.path.join(dest_folder, "data.sqlite"))
             os.remove(os.path.join(dest_folder, "kodes_codes_codici.csv"))
+            
+            ### Filter Data
             gebaeuden = pd.read_csv(os.path.join("Pieterlen", "gebaeude_batiment_edificio.csv"), sep="\t").query("GGDENR==@bfs_nummer")
             geb_egid_list = gebaeuden["EGID"].to_list()
             wohnungen = pd.read_csv(os.path.join(dest_folder, "wohnung_logement_abitazione.csv"), sep="\t").query("EGID==@geb_egid_list")

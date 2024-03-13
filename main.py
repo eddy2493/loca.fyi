@@ -25,7 +25,7 @@ bfs_olten = 2581
 bfs_pieterlen = 392
 bfs_num = bfs_pieterlen
 
-##Download Listings from immoscout as <date>_<municipality>_listings.json
+### Download Listings from immoscout as <date>_<municipality>_listings.json
 listings = []
 for plz in gwr.getPLZList(bfs_num):
     listings.extend(is24api.get_listings(plz))
@@ -34,7 +34,7 @@ today = datetime.now().strftime("%Y%m%d")
 with open(today+"_"+gwr.getGemeindeName(bfs_num)+'_listings.json', 'w') as f:
     json.dump(listings, f)
 
-#Downloads information from bfs about Entrances, Buildings, and Appartements in the folder <municipality>
+### Downloads information from bfs about Entrances, Buildings, and Appartements in the folder <municipality>
 gwr.download(bfs_num)
 
 
