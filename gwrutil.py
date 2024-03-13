@@ -37,7 +37,9 @@ class GwrUtil:
         except:
             print("Could not return PLZ list")
             
-    def download(self, bfs_nummer, dest_folder):
+    def download(self, bfs_nummer, dest_folder=''):
+        if dest_folder=='':
+            dest_folder=self.getGemeindeName(bfs_nummer)
         if not os.path.isdir(dest_folder):
             canton_code = self.getCantonCode(bfs_nummer).lower()
             response = re.get(self.MADD_URL+canton_code+'.zip')
@@ -53,4 +55,11 @@ class GwrUtil:
                     os.remove(os.path.join(dest_folder, item))
             os.remove(os.path.join(dest_folder, "data.sqlite"))
             os.remove(os.path.join(dest_folder, "kodes_codes_codici.csv"))
+            gebaeuden = pd.read_csv(os.path.join("Pieterlen", "gebaeude_batiment_edificio.csv"), sep="\t").query("GGDENR==@bfs_nummer")
+            geb_egid_list = gebaeuden["EGID"].to_list()
+            wohnungen = pd.read_csv(os.path.join(dest_folder, "wohnung_logement_abitazione.csv"), sep="\t").query("EGID==@geb_egid_list")
+            eingaenge = pd.read_csv(os.path.join(dest_folder, "eingang_entree_entrata.csv"), sep="\t").query("EGID==@geb_egid_list")
+            gebaeuden.to_csv(os.path.join(dest_folder, "gebaeude_batiment_edificio.csv"), sep="\t")
+            wohnungen.to_csv(os.path.join(dest_folder, "wohnung_logement_abitazione.csv"), sep="\t")
+            eingaenge.to_csv(os.path.join(dest_folder, "eingang_entree_entrata.csv"), sep="\t")
             
